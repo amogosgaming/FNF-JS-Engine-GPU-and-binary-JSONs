@@ -28,7 +28,7 @@ namespace {
 #if defined(_WIN32)
 std::string windowsErrorMessage(const char* operation, DWORD code) {
     LPSTR systemMessage = nullptr;
-    const DWORD length = ::FormatMessageA(
+    DWORD length = ::FormatMessageA(
         FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
             FORMAT_MESSAGE_IGNORE_INSERTS,
         nullptr,
@@ -44,10 +44,9 @@ std::string windowsErrorMessage(const char* operation, DWORD code) {
         while (length > 0 &&
                (systemMessage[length - 1] == '\r' ||
                 systemMessage[length - 1] == '\n')) {
-            systemMessage[length - 1] = '\0';
-            --const_cast<DWORD&>(length);
+            --length;
         }
-        result << ": " << systemMessage;
+        result << ": " << std::string(systemMessage, length);
     }
     if (systemMessage != nullptr) {
         ::LocalFree(systemMessage);

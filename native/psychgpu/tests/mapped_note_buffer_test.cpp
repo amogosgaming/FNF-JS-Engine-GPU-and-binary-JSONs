@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <utility>
 
 namespace fs = std::filesystem;
 using psychgpu::MappedNoteBuffer;
@@ -76,9 +77,12 @@ int main() {
     assert(buffer.findFirstAtOrAfter(21) == 3);
     assert(buffer.findFirstAtOrAfter(100) == 5);
     assert(buffer.findFirstAfter(20) == 3);
-    assert(buffer.findVisibleRange(20, 30) == std::make_pair<std::size_t, std::size_t>(1, 4));
-    assert(buffer.findVisibleRange(31, 39) == std::make_pair<std::size_t, std::size_t>(4, 4));
-    assert(buffer.findVisibleRange(40, 20) == std::make_pair<std::size_t, std::size_t>(0, 0));
+    assert((buffer.findVisibleRange(20, 30) ==
+            std::make_pair<std::size_t, std::size_t>(1, 4)));
+    assert((buffer.findVisibleRange(31, 39) ==
+            std::make_pair<std::size_t, std::size_t>(4, 4)));
+    assert((buffer.findVisibleRange(40, 20) ==
+            std::make_pair<std::size_t, std::size_t>(0, 0)));
 
     MappedNoteBuffer moved(std::move(buffer));
     assert(!buffer.isOpen());
